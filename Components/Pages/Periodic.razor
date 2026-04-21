@@ -1,0 +1,60 @@
+﻿<h3>Periodic</h3>
+
+
+@page "/periodicgame"
+@rendermode InteractiveServer
+@using ElementYakalamaca.Data
+@using static ElementYakalamaca.Data.Elements
+
+@inject ElementService elementService
+
+<h3>Periyodik Tablo Oyunu</h3>
+
+@if (currentElement != null)
+{
+<p><b>Sembol:</b> @currentElement.Symbol</p>
+<p><b>Atom Numarası:</b> @currentElement.AtomicNumber</p>
+
+<div>
+    @foreach (var option in options)
+        {
+    <button class="btn btn-primary m-1" @onclick="() => CheckAnswer(option)">
+        @option.Name
+    </button>
+        }
+</div>
+}
+
+<p>Puan: @score</p>
+
+@code {
+    private Element? currentElement;
+    private List<Element> options = new();
+    private int score = 0;
+
+    protected override void OnInitialized()
+    {
+        LoadQuestion();
+    }
+
+    private void LoadQuestion()
+    {
+        currentElement = elementService.GetRandomElement();
+        options = elementService.GetOptions(currentElement);
+    }
+
+    private void CheckAnswer(Element chosen)
+    {
+        if (chosen.Name == currentElement?.Name)
+        {
+            score++;
+        }
+        else
+        {
+            score--;
+        }
+        LoadQuestion();
+    }
+
+
+}
